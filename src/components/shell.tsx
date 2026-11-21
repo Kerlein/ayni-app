@@ -24,19 +24,49 @@ import {
 } from "lucide-react";
 import { Brand } from "./brand";
 import { useAuth } from "./auth-provider";
-import { roleLabels } from "@/lib/types";
+import { roleLabels, type Role } from "@/lib/types";
 import { isConfigured } from "@/lib/supabase-browser";
-const modules = [
+
+type ModuleItem = {
+  slug: string;
+  name: string;
+  icon: typeof Store;
+  roles: Role[];
+};
+
+const allModules: ModuleItem[] = [
+  {
+    slug: "comercios",
+    name: "Comercios y catálogo",
+    icon: Store,
+    roles: ["administrador", "comercio", "entidad_financiera", "cliente"],
+  },
+  {
+    slug: "compras",
+    name: "Compras y entregas",
+    icon: ShoppingBag,
+    roles: ["cliente", "comercio", "administrador"],
+  },
+  {
+    slug: "financiamiento",
+    name: "Financiamiento y ofertas",
+    icon: Landmark,
+    roles: ["cliente", "administrador"],
+  },
   {
     slug: "evaluacion",
-    name: "Evaluación crediticia",
+    name: "Evaluación bancaria",
     icon: ChartNoAxesCombined,
+    roles: ["entidad_financiera"],
   },
-  { slug: "compras", name: "Gestión de compras", icon: ShoppingBag },
-  { slug: "pagos", name: "Gestión de pagos", icon: CreditCard },
-  { slug: "comercios", name: "Gestión de comercios", icon: Store },
-  { slug: "financiamiento", name: "Gestión de financiamiento", icon: Landmark },
+  {
+    slug: "pagos",
+    name: "Cuotas, pagos y comisiones",
+    icon: CreditCard,
+    roles: ["cliente", "entidad_financiera", "administrador", "comercio"],
+  },
 ];
+
 export function Shell({
   children,
   preview = false,
@@ -53,14 +83,17 @@ export function Shell({
   const [usersOpen, setUsersOpen] = useState(true);
   const [logoutError, setLogoutError] = useState("");
   const dropdown = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!preview && !loading && !session && isConfigured())
       router.replace("/login");
   }, [loading, session, preview, router]);
+
   useEffect(() => {
     setMobile(false);
     setOpen(false);
   }, [path]);
+
   useEffect(() => {
     function outside(e: PointerEvent) {
       if (!dropdown.current?.contains(e.target as Node)) setOpen(false);
@@ -78,6 +111,7 @@ export function Shell({
       document.removeEventListener("keydown", key);
     };
   }, []);
+
   if (!preview && (loading || (!session && isConfigured())))
     return (
       <main className="center-page">
@@ -85,6 +119,7 @@ export function Shell({
         <p>Cargando tu espacio…</p>
       </main>
     );
+
   if (!preview && (!isConfigured() || !profile))
     return (
       <main className="center-page">
@@ -124,7 +159,12 @@ export function Shell({
         </div>
       </main>
     );
+
   const admin = preview || profile?.role === "administrador";
+  const visibleModules = preview
+    ? allModules
+    : allModules.filter((m) => profile && m.roles.includes(profile.role));
+
   const name = preview ? "Vista previa" : profile!.full_name;
   const initials = preview
     ? "AY"
@@ -134,19 +174,28 @@ export function Shell({
         .slice(0, 2)
         .map((x) => x[0])
         .join("");
-  const role = preview ? "Sin sesión iniciada" : roleLabels[profile!.role];
+
+  const activeOrgName = profile?.memberships?.[0]?.organization?.name;
+  const role = preview
+    ? "Sin sesión iniciada"
+    : activeOrgName
+      ? `${roleLabels[profile!.role]} · ${activeOrgName}`
+      : roleLabels[profile!.role];
+
   const userPage = path.includes("/usuarios");
   const auditPage = path.includes("/actividad");
   const profilePage = path.includes("/perfil");
-  const module = modules.find((m) => path.includes("/" + m.slug));
+  const activeModule = allModules.find((m) => path.includes("/" + m.slug));
   const title = userPage
     ? "Gestión de usuarios"
     : auditPage
       ? "Registro de actividad"
       : profilePage
         ? "Mi perfil"
-        : module?.name || "Inicio";
+        : activeModule?.name || "Inicio";
+
   const destination = (href: string) => (preview ? "/login" : href);
+
   return (
     <div className={`app-shell ${collapsed ? "collapsed" : ""}`}>
       <a className="skip-link" href="#main-content">
@@ -179,7 +228,7 @@ export function Shell({
           </span>
           <div>
             <strong>Mi espacio AYNI</strong>
-            <small>Plataforma de gestión</small>
+            <small>Canal tecnológico · MVP</small>
           </div>
         </div>
         <p className="nav-label">PRINCIPAL</p>
@@ -229,10 +278,10 @@ export function Shell({
             </div>
           )}
           <p className="nav-label">MÓDULOS</p>
-          {modules.map((m) => (
+          {visibleModules.map((m) => (
             <Link
               key={m.slug}
-              className={`nav-item ${module?.slug === m.slug ? "active" : ""}`}
+              className={`nav-item ${activeModule?.slug === m.slug ? "active" : ""}`}
               href={destination("/app/" + m.slug)}
               title={m.name}
             >
@@ -248,8 +297,8 @@ export function Shell({
               <ShieldCheck size={21} />
             </span>
             <div>
-              <strong>Tu espacio seguro</strong>
-              <small>El acceso depende de tu rol.</small>
+              <strong>Aislamiento activo</strong>
+              <small>Permisos por rol y organización.</small>
             </div>
           </div>
           <button
@@ -359,9 +408,9 @@ export function Shell({
           {children}
         </main>
         <footer className="app-footer">
-          <span>AYNI © {new Date().getFullYear()} · Juntos, paso a paso.</span>
+          <span>AYNI © {new Date().getFullYear()} · Canal tecnológico de compras financiadas.</span>
           <span>
-            <Clock3 size={13} /> Primera etapa · Gestión de usuarios
+            <Clock3 size={13} /> MVP · Entorno de simulación académica
           </span>
         </footer>
       </div>

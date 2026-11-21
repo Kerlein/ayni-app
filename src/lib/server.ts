@@ -2,7 +2,8 @@ import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import type { Profile } from "./types";
+import type { Profile, Role } from "./types";
+
 export class HttpError extends Error {
   constructor(
     public status: number,
@@ -11,6 +12,7 @@ export class HttpError extends Error {
     super(message);
   }
 }
+
 export function publicEnv() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -18,6 +20,7 @@ export function publicEnv() {
     throw new HttpError(503, "Falta configurar la conexión con Supabase.");
   return { url, key };
 }
+
 export async function authorize(request: Request, admin = false) {
   const { url, key } = publicEnv();
   const token = request.headers
@@ -56,6 +59,16 @@ export async function authorize(request: Request, admin = false) {
     );
   return { db, user, profile: profile as Profile };
 }
+
+export function requireRole(profile: Profile, allowed: Role[], message?: string) {
+  if (!allowed.includes(profile.role)) {
+    throw new HttpError(
+      403,
+      message || "Tu rol actual no tiene permisos para realizar esta acción.",
+    );
+  }
+}
+
 export function authAdmin() {
   const { url } = publicEnv();
   const key = process.env.SUPABASE_SECRET_KEY;
@@ -68,6 +81,7 @@ export function authAdmin() {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
+
 export function fail(error: unknown) {
   if (error instanceof HttpError)
     return NextResponse.json(
@@ -96,6 +110,7 @@ export function fail(error: unknown) {
     { status: 500 },
   );
 }
+
 export function dbError(error: { message: string; code?: string } | null) {
   if (error)
     throw new HttpError(error.code === "42501" ? 403 : 400, error.message);

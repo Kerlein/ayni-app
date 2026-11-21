@@ -1663,3 +1663,182 @@ tbody tr:hover {
     transition: none !important;
   }
 }
+
+/* ===== AYNI MVP: Extensiones de UI para módulos de negocio ===== */
+.demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.65rem 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 12px;
+  background: #effaf4;
+  border: 1px solid #b7e4cd;
+  color: #0c142b;
+  font-size: 0.88rem;
+}
+
+.demo-banner strong {
+  color: #007d49;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid #e4e9ef;
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.kpi-card small {
+  color: #5b677d;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.kpi-card strong {
+  font-size: 1.55rem;
+  color: #0c142b;
+  line-height: 1.2;
+}
+
+.kpi-card span {
+  font-size: 0.8rem;
+  color: #6b778c;
+}
+
+.tabs-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e4e9ef;
+  padding-bottom: 0.65rem;
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid #d9e1ea;
+  background: #ffffff;
+  color: #2c3850;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.tab-btn:hover {
+  background: #f5f8fb;
+}
+
+.tab-btn.active {
+  background: #0c142b;
+  border-color: #0c142b;
+  color: #ffffff;
+}
+
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pill-badge.green {
+  background: #e6f7ef;
+  color: #007a47;
+}
+
+.pill-badge.amber {
+  background: #fff4e0;
+  color: #9c5b00;
+}
+
+.pill-badge.red {
+  background: #fdecec;
+  color: #b42318;
+}
+
+.pill-badge.blue {
+  background: #e9f2ff;
+  color: #175cd3;
+}
+
+.pill-badge.gray {
+  background: #f1f4f8;
+  color: #475467;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.item-card {
+  background: #ffffff;
+  border: 1px solid #e4e9ef;
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.item-card h3 {
+  margin: 0;
+  font-size: 1.02rem;
+  color: #0c142b;
+}
+
+.item-card p {
+  margin: 0.25rem 0 0;
+  font-size: 0.86rem;
+  color: #556176;
+}
+
+.split-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.muted-text {
+  color: #627086;
+  font-size: 0.84rem;
+}
+
+.section-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
